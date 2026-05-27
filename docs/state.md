@@ -9,11 +9,11 @@
 
 | Field | Value |
 |-------|-------|
-| **Active Phase** | Phase 4 - Pipeline Infrastructure & Channel Buffering |
-| **Overall Progress** | 44% (Phase 0, 1, 2 ve 3 tamamlandı) |
+| **Active Phase** | Phase 6 - Router & Formatter (Strategy Pattern - Step 5) |
+| **Overall Progress** | 70% (Phase 0, 1, 2, 3, 4 ve 5 tamamlandı) |
 | **Last Updated** | 2026-05-27 |
 | **Blocker** | None |
-| **Next Step** | Phase 4.1 - Create `System.Threading.Channels` bounded channel |
+| **Next Step** | Phase 6.1 - Category → TargetRole mapping configuration |
 
 ---
 
@@ -25,14 +25,16 @@
 | **1** | Data Models & Contracts | ✅ 2026-05-27 |
 | **2** | Message Broker Layer | ✅ 2026-05-27 |
 | **3** | Log Producer Service | ✅ 2026-05-27 |
+| **4** | Pipeline Infrastructure & Channel Buffering | ✅ 2026-05-27 |
+| **5** | Pipeline Processing Steps | ✅ 2026-05-27 |
 
 ---
 
 ## Active Work Details
 
-**Phase:** 4 - Pipeline Infrastructure & Channel Buffering  
+**Phase:** 6 - Router & Formatter (Strategy Pattern - Step 5)  
 **Status:** Not started  
-**Notes:** Phase 3 tamamlandı. LogGeneratorService, LogDataGenerator ve ProducerSettings oluşturuldu. Build: 0 hata, 0 uyarı.
+**Notes:** Phase 5 (Handlers) tamamlandı. Test projesi oluşturuldu (xUnit, NSubstitute) ve tüm handler'ların unit testleri 43/43 başarıyla çalıştı. PipelineContext yapısına geçilerek mimari iyileştirme yapıldı. TCKN maskelemesinde checksum algoritması eklendi.
 
 ---
 
@@ -41,6 +43,7 @@
 | # | Date | Problem | Resolution | Affected Phase |
 |---|------|---------|------------|----------------|
 | 1 | 2026-05-27 | Solution `.slnx` vs `.sln` formatı | `.slnx` korundu — zaten doğru yapılandırılmış, 3 proje dahil | Phase 0 |
+| 2 | 2026-05-27 | `MessageEnvelope<LogPayload>` pipeline'a taşınması (Phase 5 başı) | `PipelineContext` wrapper sınıfı eklendi. Envelope'a direkt dokunmak yerine context üzerinden payload ve metadata taşınması sağlandı. | Phase 5 |
 
 ---
 
@@ -72,6 +75,9 @@
 | 12 | 2026-05-27 | `PeriodicTimer` ile rate control | `Task.Delay` yerine `PeriodicTimer` (.NET 6+) kullanıldı — drift-free üretim döngüsü sağlar |
 | 13 | 2026-05-27 | `Worker.cs` stub olarak korundu, silinmedi | git geçmişi için; DI'a kayıtlı değil — `LogGeneratorService` tek aktif BackgroundService |
 | 14 | 2026-05-27 | `LogDataGenerator` Singleton DI kaydı | Stateless, thread-safe; her tick'te yeni instance oluşturmak gereksiz GC baskısı yaratır |
+| 15 | 2026-05-27 | `PipelineContext` refactoring | `MessageEnvelope` içine metadata koymak yerine temiz bir `PipelineContext` wrapper sınıfı ile I/O veri bağlamı (EnrichedLog) handler'lar arası taşındı. |
+| 16 | 2026-05-27 | TCKN check-sum validasyonu (Step 3) | Sadece regex değil, Luhn/checksum doğrulaması yapılarak borsa işlem numaraları gibi 11 haneli sayıların kazara sansürlenmesinin önüne geçildi. |
+| 17 | 2026-05-27 | `LogPayload` init → set değişikliği | KVKK maskeleme işleminde GC baskısını azaltmak ve in-place değişiklik yapmak için message property'leri mutable hale getirildi. |
 
 ---
 
@@ -131,4 +137,14 @@
 
 - `docker-compose.yml` — RabbitMQ healthcheck, Producer, Middleware, shared output volume
 - `output/.gitkeep` — shared output volume dizini
+- Build doğrulaması: `dotnet build` → **Başarılı (0 hata, 0 uyarı)**
+
+### [2026-05-27] - Phase 5 Completed — Antigravity
+- `PipelineContext` wrapper sınıfı oluşturuldu, `IPipelineHandler` referansları refactor edildi.
+- `LevelFilterHandler` — INFO/WARN düşürür.
+- `DeduplicationFilterHandler` — `IMemoryCache` ile Idempotent consumer uygulandı.
+- `KvkkAnonymizerHandler` — TCKN (checksum kontrollü), CC (boşluklu/boşluksuz), Email, Telefon regex maskelemesi eklendi.
+- `MetadataEnricherHandler` — Log seviyesine göre Criticality hesaplaması ve Role çözümlenmesi yapıldı.
+- `tests/ExchangeLogMiddleware.Tests` xUnit/NSubstitute test projesi oluşturuldu.
+- Tüm 4 handler için unit testler (43/43) başarılı bir şekilde geçirildi.
 - Build doğrulaması: `dotnet build` → **Başarılı (0 hata, 0 uyarı)**

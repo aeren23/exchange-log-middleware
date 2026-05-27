@@ -129,9 +129,9 @@ services:
       MessageBroker__AzureServiceBus__QueueName: exchange-logs
       
       # Pipeline konfigürasyonu
-      Pipeline__MinimumLogLevel: ERROR
-      Pipeline__DeduplicationCacheTtlMinutes: 10
-      Pipeline__ChannelCapacity: 1000
+      Pipeline__MinimumLogLevel: ${PIPELINE_MINIMUM_LOG_LEVEL:-ERROR}
+      Pipeline__DeduplicationCacheTtlMinutes: ${PIPELINE_DEDUP_CACHE_TTL_MINUTES:-10}
+      Pipeline__ChannelCapacity: ${PIPELINE_CHANNEL_CAPACITY:-1000}
       
       # Output dizini (Docker volume mount noktası)
       Output__BasePath: /app/output

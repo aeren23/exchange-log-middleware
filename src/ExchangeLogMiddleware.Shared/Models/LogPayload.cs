@@ -36,12 +36,12 @@ public sealed class LogPayload
     /// İş mantığı log metni. Hassas veri içerebilir.
     /// KvkkAnonymizerHandler (Step 3) tarafından maskelenir.
     /// </summary>
-    public required string Message { get; init; }
+    public required string Message { get; set; }
 
     /// <summary>
     /// Opsiyonel ek veri alanı. TCKN, kredi kartı numarası, e-posta veya telefon gibi
     /// hassas veriler bu alana yerleştirilebilir (test senaryoları için).
     /// KvkkAnonymizerHandler (Step 3) tarafından maskelenir.
     /// </summary>
-    public string? RawData { get; init; }
+    public string? RawData { get; set; }
 }

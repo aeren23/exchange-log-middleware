@@ -4,4 +4,7 @@
     <Project Path="src/ExchangeLogMiddleware.Producer/ExchangeLogMiddleware.Producer.csproj" />
     <Project Path="src/ExchangeLogMiddleware.Shared/ExchangeLogMiddleware.Shared.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ExchangeLogMiddleware.Tests/ExchangeLogMiddleware.Tests.csproj" />
+  </Folder>
 </Solution>

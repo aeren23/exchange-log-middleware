@@ -7,7 +7,7 @@ using ExchangeLogMiddleware.Shared.Models;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Her handler bir <see cref="MessageEnvelope{LogPayload}"/> alır, işler ve uygunsa
+/// Her handler bir <see cref="PipelineContext"/> alır, işler ve uygunsa
 /// zincirdeki sonraki handler'a iletir.
 /// </para>
 /// <para>
@@ -32,16 +32,16 @@ public interface IPipelineHandler
     IPipelineHandler SetNext(IPipelineHandler next);
 
     /// <summary>
-    /// Mesajı işler ve gerekirse zincirdeki sonraki handler'a iletir.
+    /// Pipeline context'ini işler ve gerekirse zincirdeki sonraki handler'a iletir.
     /// </summary>
     /// <remarks>
     /// Handler mesajı DROPLAYABİLİR (filtreleme veya hata durumunda).
     /// DROP: sonraki handler çağrılmaz, metot döner.
-    /// PASS: <c>_nextHandler?.HandleAsync(envelope, cancellationToken)</c> çağrılır.
+    /// PASS: <c>_nextHandler?.HandleAsync(context, cancellationToken)</c> çağrılır.
     /// </remarks>
-    /// <param name="envelope">İşlenecek mesaj zarfı.</param>
+    /// <param name="context">Pipeline bağlam nesnesi — envelope ve enriched data taşır.</param>
     /// <param name="cancellationToken">İptal token'ı.</param>
     Task HandleAsync(
-        MessageEnvelope<LogPayload> envelope,
+        PipelineContext context,
         CancellationToken cancellationToken = default);
 }

@@ -76,14 +76,14 @@ A BackgroundService that generates high-frequency stock exchange log data.
 
 Async pipeline infrastructure based on System.Threading.Channels.
 
-- [ ] **4.1** Create `System.Threading.Channels` bounded channel
-- [ ] **4.2** Write-to-channel mechanism (RabbitMqAdapter -> Channel)
-- [ ] **4.3** Read-from-channel mechanism (Worker thread)
-- [ ] **4.4** Create `PipelineOrchestrator` class (executes handlers in order)
-- [ ] **4.5** Chain of Responsibility base class / abstract handler
-- [ ] **4.6** Pipeline DI registration (IServiceCollection configuration)
-- [ ] **4.7** Graceful shutdown support (CancellationToken propagation)
-- [ ] **4.8** Channel backpressure and capacity management
+- [x] **4.1** Create `System.Threading.Channels` bounded channel
+- [x] **4.2** Write-to-channel mechanism (RabbitMqAdapter -> Channel)
+- [x] **4.3** Read-from-channel mechanism (Worker thread)
+- [x] **4.4** Create `PipelineOrchestrator` class (executes handlers in order)
+- [x] **4.5** Chain of Responsibility base class / abstract handler
+- [x] **4.6** Pipeline DI registration (IServiceCollection configuration)
+- [x] **4.7** Graceful shutdown support (CancellationToken propagation)
+- [x] **4.8** Channel backpressure and capacity management
 
 ---
 
@@ -92,34 +92,34 @@ Async pipeline infrastructure based on System.Threading.Channels.
 Implementation of the ordered pipeline handlers as defined in the spec.
 
 ### 5A: Performance Level Filter (Step 1)
-- [ ] **5A.1** Create `LevelFilterHandler` class
-- [ ] **5A.2** Read `MinimumLogLevel` setting from `appsettings.json`
-- [ ] **5A.3** Level comparison logic (INFO < WARN < ERROR < CRITICAL)
-- [ ] **5A.4** DROP logs below threshold and update PerformanceTracker
-- [ ] **5A.5** Unit test: level filtering validation
+- [x] **5A.1** Create `LevelFilterHandler` class
+- [x] **5A.2** Read `MinimumLogLevel` setting from `appsettings.json`
+- [x] **5A.3** Level comparison logic (INFO < WARN < ERROR < CRITICAL)
+- [x] **5A.4** DROP logs below threshold and update PerformanceTracker
+- [x] **5A.5** Unit test: level filtering validation
 
 ### 5B: Deduplication Filter (Step 2)
-- [ ] **5B.1** Create `DeduplicationFilterHandler` class
-- [ ] **5B.2** `IMemoryCache` integration (Microsoft.Extensions.Caching.Memory)
-- [ ] **5B.3** MessageId-based cache check & insert (TTL: 10 minutes)
-- [ ] **5B.4** DROP duplicate logs and update PerformanceTracker
-- [ ] **5B.5** Unit test: deduplication validation
+- [x] **5B.1** Create `DeduplicationFilterHandler` class
+- [x] **5B.2** `IMemoryCache` integration (Microsoft.Extensions.Caching.Memory)
+- [x] **5B.3** MessageId-based cache check & insert (TTL: 10 minutes)
+- [x] **5B.4** DROP duplicate logs and update PerformanceTracker
+- [x] **5B.5** Unit test: deduplication validation
 
 ### 5C: KVKK Anonymizer (Step 3)
-- [ ] **5C.1** Create `KvkkAnonymizerHandler` class
-- [ ] **5C.2** National ID (TCKN) masking Regex (11 digits → `12*********`)
-- [ ] **5C.3** Credit card masking Regex (16 digits → `5235 **** **** 1234`)
-- [ ] **5C.4** Email masking Regex (`a****@****.com`)
-- [ ] **5C.5** Phone number masking Regex (`+90 5*********`)
-- [ ] **5C.6** Apply masking to Message and RawData fields
-- [ ] **5C.7** Unit test: all masking scenarios
+- [x] **5C.1** Create `KvkkAnonymizerHandler` class
+- [x] **5C.2** National ID (TCKN) masking Regex (11 digits → `12*********`)
+- [x] **5C.3** Credit card masking Regex (16 digits → `5235 **** **** 1234`)
+- [x] **5C.4** Email masking Regex (`a****@****.com`)
+- [x] **5C.5** Phone number masking Regex (`+90 5*********`)
+- [x] **5C.6** Apply masking to Message and RawData fields
+- [x] **5C.7** Unit test: all masking scenarios
 
 ### 5D: Metadata Enricher (Step 4)
-- [ ] **5D.1** Create `MetadataEnricherHandler` class
-- [ ] **5D.2** Extract metadata from Envelope (MessageId, SenderId, Timestamp)
-- [ ] **5D.3** Calculate Criticality (CRITICAL→High, ERROR→Medium, etc.)
-- [ ] **5D.4** Build `EnrichedLog` object and pass it down the pipeline
-- [ ] **5D.5** Unit test: enrichment validation
+- [x] **5D.1** Create `MetadataEnricherHandler` class
+- [x] **5D.2** Extract metadata from Envelope (MessageId, SenderId, Timestamp)
+- [x] **5D.3** Calculate Criticality (CRITICAL→High, ERROR→Medium, etc.)
+- [x] **5D.4** Build `EnrichedLog` object and pass it down the pipeline
+- [x] **5D.5** Unit test: enrichment validation
 
 ---
 
