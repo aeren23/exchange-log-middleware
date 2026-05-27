@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ExchangeLogMiddleware.Middleware/ExchangeLogMiddleware.Middleware.csproj" />
+    <Project Path="src/ExchangeLogMiddleware.Producer/ExchangeLogMiddleware.Producer.csproj" />
+    <Project Path="src/ExchangeLogMiddleware.Shared/ExchangeLogMiddleware.Shared.csproj" />
+  </Folder>
+</Solution>

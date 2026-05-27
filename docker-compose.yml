@@ -1,0 +1,162 @@
+version: "3.9"
+
+# ============================================================
+# Exchange Log Middleware — Docker Compose
+# Servisler: RabbitMQ (broker), Azure Service Bus Emulator, Producer, Middleware
+# ============================================================
+
+services:
+  # ----------------------------------------------------------
+  # RabbitMQ Message Broker
+  # Management UI: http://localhost:15672 (guest/guest)
+  # ----------------------------------------------------------
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: exchange-rabbitmq
+    ports:
+      - "5672:5672"     # AMQP port
+      - "15672:15672"   # Management UI port
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    networks:
+      - exchange-net
+
+  # ----------------------------------------------------------
+  # Azure SQL Edge: Service Bus Emulator Backend
+  # ----------------------------------------------------------
+  sqledge:
+    image: mcr.microsoft.com/azure-sql-edge
+    container_name: exchange-sqledge
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${SQL_EDGE_PASSWORD}
+    networks:
+      - exchange-net
+    restart: on-failure
+
+  # ----------------------------------------------------------
+  # Azure Service Bus Emulator
+  # Local AMQP: localhost:5673
+  # ----------------------------------------------------------
+  servicebus-emulator:
+    image: mcr.microsoft.com/azure-messaging/servicebus-emulator:latest
+    container_name: exchange-servicebus-emulator
+    ports:
+      - "5673:5672"   # Host 5673 -> Container 5672 (AMQP)
+    environment:
+      - ACCEPT_EULA=Y
+      - SQL_SERVER=sqledge
+      - MSSQL_SA_PASSWORD=${SQL_EDGE_PASSWORD}
+      - CONFIG_JSON={"UserConfig":{"Namespaces":[{"Name":"sbemulator","Queues":[{"Name":"exchange-logs","Properties":{"DeadLetteringOnMessageExpiration":false,"DefaultMessageTimeToLive":"P14D","DuplicateDetectionHistoryTimeWindow":"PT10M","EnableBatchedOperations":true,"EnableExpress":false,"EnablePartitioning":false,"IsAnonymousAccessible":false,"MaxDeliveryCount":10,"MaxSizeInMegabytes":1024,"RequiresDuplicateDetection":false,"RequiresSession":false}}]}]}}
+    depends_on:
+      - sqledge
+    networks:
+      - exchange-net
+    restart: on-failure
+
+  # ----------------------------------------------------------
+  # Producer: Yüksek frekanslı borsa log verisi üretir
+  # ----------------------------------------------------------
+  producer:
+    build:
+      context: .
+      dockerfile: src/ExchangeLogMiddleware.Producer/Dockerfile
+    container_name: exchange-producer
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      servicebus-emulator:
+        condition: service_started
+    environment:
+      # Broker Seçimi (RabbitMQ veya AzureServiceBus)
+      MessageBroker__Provider: RabbitMQ
+      
+      # RabbitMQ Ayarları
+      MessageBroker__RabbitMQ__HostName: rabbitmq
+      MessageBroker__RabbitMQ__Port: 5672
+      MessageBroker__RabbitMQ__UserName: ${RABBITMQ_USER}
+      MessageBroker__RabbitMQ__Password: ${RABBITMQ_PASSWORD}
+      MessageBroker__RabbitMQ__QueueName: exchange-logs
+      
+      # Azure Service Bus Ayarları (Emülatör)
+      MessageBroker__AzureServiceBus__ConnectionString: "${ASB_CONNECTION_STRING}"
+      MessageBroker__AzureServiceBus__QueueName: exchange-logs
+      
+      # Üretim hızı konfigürasyonu
+      Producer__LogsPerSecond: 10
+      Producer__ErrorRate: "0.3"
+    volumes:
+      - output-data:/app/output
+    networks:
+      - exchange-net
+    restart: on-failure
+
+  # ----------------------------------------------------------
+  # Middleware: Log pipeline'ı — filtrele, anonimleştir, zenginleştir, yönlendir
+  # ----------------------------------------------------------
+  middleware:
+    build:
+      context: .
+      dockerfile: src/ExchangeLogMiddleware.Middleware/Dockerfile
+    container_name: exchange-middleware
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      servicebus-emulator:
+        condition: service_started
+    environment:
+      # Broker Seçimi (RabbitMQ veya AzureServiceBus)
+      MessageBroker__Provider: RabbitMQ
+      
+      # RabbitMQ Ayarları
+      MessageBroker__RabbitMQ__HostName: rabbitmq
+      MessageBroker__RabbitMQ__Port: 5672
+      MessageBroker__RabbitMQ__UserName: ${RABBITMQ_USER}
+      MessageBroker__RabbitMQ__Password: ${RABBITMQ_PASSWORD}
+      MessageBroker__RabbitMQ__QueueName: exchange-logs
+      
+      # Azure Service Bus Ayarları (Emülatör)
+      MessageBroker__AzureServiceBus__ConnectionString: "${ASB_CONNECTION_STRING}"
+      MessageBroker__AzureServiceBus__QueueName: exchange-logs
+      
+      # Pipeline konfigürasyonu
+      Pipeline__MinimumLogLevel: ERROR
+      Pipeline__DeduplicationCacheTtlMinutes: 10
+      Pipeline__ChannelCapacity: 1000
+      
+      # Output dizini (Docker volume mount noktası)
+      Output__BasePath: /app/output
+    volumes:
+      - output-data:/app/output
+    networks:
+      - exchange-net
+    restart: on-failure
+
+# ============================================================
+# Volumes: Kalıcı ve paylaşımlı veri depolama
+# ============================================================
+volumes:
+  rabbitmq-data:
+
+  output-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./output
+
+# ============================================================
+# Networks: Servis izolasyonu
+# ============================================================
+networks:
+  exchange-net:
+    driver: bridge

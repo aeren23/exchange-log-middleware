@@ -112,6 +112,10 @@ The entire pipeline `Handle` mechanism MUST accept and process the `MessageEnvel
 * Security -> Outputs `<...>` formatted CSV.
 * SysAdmin -> Outputs `{~...~}` formatted Markdown.
 
+> **[ARCHITECTURAL DECISION — 2026-05-27]** SysAdmin Formatter Output Format:
+> SysAdmin output requires flexibility to support both **Markdown (`.md`)** and **HTML (`.html`)** formats. The architecture must allow enabling either or both simultaneously via configuration.
+> **Future migration path:** We will introduce an `HtmlFormatterStrategy` alongside the current `MarkdownFormatterStrategy`. The router will be capable of mapping the `SysAdmin` role to multiple strategies simultaneously based on configuration, fully adhering to the Open/Closed Principle (OCP).
+
 
 * Writes concurrently to shared Docker Volumes.
 

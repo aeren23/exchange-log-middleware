@@ -1,0 +1,13 @@
+# .NET Core
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Environment Files
+.env
+
+# Docker output / data volumes
+output/
