@@ -24,7 +24,9 @@ public sealed class DeduplicationFilterHandlerTests : IDisposable
     public DeduplicationFilterHandlerTests()
     {
         _cache = new MemoryCache(new MemoryCacheOptions());
+#pragma warning disable CS0618
         _tracker = new NoOpPerformanceTracker();
+#pragma warning restore CS0618
         _logger = Substitute.For<ILogger<DeduplicationFilterHandler>>();
     }
 

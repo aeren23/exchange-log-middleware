@@ -42,4 +42,10 @@ public sealed class PipelineSettings
     /// broker callback bloklanır (backpressure). Bu, memory leak'i önler.
     /// </summary>
     public int ChannelCapacity { get; init; } = 1000;
+
+    /// <summary>
+    /// <c>MetricsReporterService</c>'in performans metriklerini konsola yazma aralığı (saniye).
+    /// Spec §6.3: "A background timer MUST log these metrics to the console every 5 seconds."
+    /// </summary>
+    public int MetricsReportIntervalSeconds { get; init; } = 5;
 }

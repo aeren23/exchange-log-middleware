@@ -53,9 +53,8 @@ public sealed class EnrichedLog
     public required string SanitizedMessage { get; init; }
 
     /// <summary>
-    /// Bu log'un yönlendirileceği hedef roller.
-    /// Fan-out/Multicast desteği için birden fazla rol içerebilir.
-    /// <c>RouterAndFormatterHandler</c> bu listedeki her rol için ayrı dosyaya yazar.
+    /// Bu logun hedeflendiği rol listesi.
+    /// Step 5 (Router) konfigürasyondan kategoriye göre doldurur (Fan-out).
     /// </summary>
-    public required IReadOnlyList<TargetRole> TargetRoles { get; init; }
+    public IReadOnlyList<TargetRole> TargetRoles { get; set; } = [];
 }

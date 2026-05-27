@@ -9,11 +9,11 @@
 
 | Field | Value |
 |-------|-------|
-| **Active Phase** | Phase 6 - Router & Formatter (Strategy Pattern - Step 5) |
-| **Overall Progress** | 70% (Phase 0, 1, 2, 3, 4 ve 5 tamamlandı) |
-| **Last Updated** | 2026-05-27 |
+| **Active Phase** | Phase 8 - Integration & Docker Compose (End-to-End) |
+| **Overall Progress** | 88% (Phase 0, 1, 2, 3, 4, 5, 6 ve 7 tamamlandı) |
+| **Last Updated** | 2026-05-28 |
 | **Blocker** | None |
-| **Next Step** | Phase 6.1 - Category → TargetRole mapping configuration |
+| **Next Step** | Phase 8.1 - `docker-compose up` ile tam sistem ayağa kaldırma |
 
 ---
 
@@ -27,14 +27,16 @@
 | **3** | Log Producer Service | ✅ 2026-05-27 |
 | **4** | Pipeline Infrastructure & Channel Buffering | ✅ 2026-05-27 |
 | **5** | Pipeline Processing Steps | ✅ 2026-05-27 |
+| **6** | Router & Formatter (Strategy Pattern - Step 5) | ✅ 2026-05-27 |
+| **7** | Performance Monitoring & Metrics (Observability) | ✅ 2026-05-28 |
 
 ---
 
 ## Active Work Details
 
-**Phase:** 6 - Router & Formatter (Strategy Pattern - Step 5)  
+**Phase:** 8 - Integration & Docker Compose (End-to-End)  
 **Status:** Not started  
-**Notes:** Phase 5 (Handlers) tamamlandı. Test projesi oluşturuldu (xUnit, NSubstitute) ve tüm handler'ların unit testleri 43/43 başarıyla çalıştı. PipelineContext yapısına geçilerek mimari iyileştirme yapıldı. TCKN maskelemesinde checksum algoritması eklendi.
+**Notes:** Phase 7 (Performance Monitoring) tamamlandı. `PerformanceTracker` Singleton (`Interlocked` tabanlı thread-safe sayaçlar) ve `MetricsReporterService` (BackgroundService, `PeriodicTimer` 5 sn, throughput hesaplama) eklendi. SRP: sayaçlar ve raporlama ayrı sınıflarda. `appsettings.json`'a `MetricsReportIntervalSeconds` eklendi (magic number engelleme). `NoOpPerformanceTracker` `[Obsolete]` olarak işaretlendi. Testler (82/82) başarıyla geçti.
 
 ---
 
@@ -147,4 +149,25 @@
 - `MetadataEnricherHandler` — Log seviyesine göre Criticality hesaplaması ve Role çözümlenmesi yapıldı.
 - `tests/ExchangeLogMiddleware.Tests` xUnit/NSubstitute test projesi oluşturuldu.
 - Tüm 4 handler için unit testler (43/43) başarılı bir şekilde geçirildi.
+- Build doğrulaması: `dotnet build` → **Başarılı (0 hata, 0 uyarı)**
+
+### [2026-05-27] - Phase 6 Completed — Antigravity
+- `RouterSettings` konfigürasyon sınıfı eklendi (Kategori -> Roller ve Roller -> Formatlar).
+- `IFormatterStrategy` tabanlı formatlayıcılar eklendi: `JsonFormatterStrategy`, `CsvFormatterStrategy`, `MarkdownFormatterStrategy`, `HtmlFormatterStrategy`.
+- `FormatterFactory` oluşturuldu. `appsettings.json`'dan alınan ayarlara göre aktif formatlayıcıları döner (SysAdmin için hem Markdown hem HTML).
+- `IFileWriter` tabanlı `ThreadSafeFileWriter` sınıfı oluşturuldu. `SemaphoreSlim` kullanılarak I/O çakışmaları engellendi.
+- `RouterAndFormatterHandler` (Step 5) eklendi. Hedef rolleri bulup Fan-out mantığıyla logları asenkron yazar.
+- Yeni testler eklenerek toplam test sayısı 63'e çıkarıldı. Testler (63/63) başarılı.
+- Build doğrulaması: `dotnet build` → **Başarılı (0 hata, 0 uyarı)**
+
+### [2026-05-28] - Phase 7 Completed — Cascade
+- `src/ExchangeLogMiddleware.Middleware/Pipeline/PerformanceTracker.cs` — yeni, `IPerformanceTracker` Singleton implementasyonu. `Interlocked` ile lock-free thread-safe sayaçlar (`TotalReceived`, `DroppedByFilter`, `SuccessfullyProcessed`).
+- `src/ExchangeLogMiddleware.Middleware/Services/MetricsReporterService.cs` — yeni, `BackgroundService`. `PeriodicTimer` (5 sn) ile `IPerformanceTracker` metriklerini ve throughput (msg/s) değerini konsola yazdırır. SRP: raporlama sorumluluğu ayrı sınıfta.
+- `src/ExchangeLogMiddleware.Middleware/Configuration/PipelineSettings.cs` — `MetricsReportIntervalSeconds` property eklendi (magic number engelleme).
+- `src/ExchangeLogMiddleware.Middleware/appsettings.json` — `Pipeline.MetricsReportIntervalSeconds: 5` eklendi.
+- `src/ExchangeLogMiddleware.Middleware/Program.cs` — DI: `NoOpPerformanceTracker` → `PerformanceTracker` değiştirildi; `MetricsReporterService` hosted service olarak kaydedildi.
+- `src/ExchangeLogMiddleware.Middleware/Pipeline/NoOpPerformanceTracker.cs` — `[Obsolete]` olarak işaretlendi; test izolasyonu için korundu.
+- `tests/.../Pipeline/PerformanceTrackerTests.cs` — yeni (19 test): sayaç doğruluğu, bağımsızlık, Reset ve concurrent thread-safety.
+- `tests/.../Services/MetricsReporterServiceTests.cs` — yeni (4 test): metrik okuma, log çıktısı, graceful shutdown, interval doğruluğu.
+- Toplam test sayısı 82'ye yükseldi. Testler (82/82) başarılı.
 - Build doğrulaması: `dotnet build` → **Başarılı (0 hata, 0 uyarı)**

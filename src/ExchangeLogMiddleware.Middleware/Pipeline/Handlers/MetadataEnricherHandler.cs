@@ -31,7 +31,6 @@ using LogLevel = ExchangeLogMiddleware.Shared.Enums.LogLevel;
 ///   <item>Level ← <c>envelope.Payload.Level</c></item>
 ///   <item>Category ← <c>envelope.Payload.Category</c></item>
 ///   <item>SanitizedMessage ← <c>envelope.Payload.Message</c> (KVKK maskelemesi Step 3'te yapılmış)</item>
-///   <item>TargetRoles ← <see cref="ResolveTargetRoles"/> (Category tabanlı mapping)</item>
 /// </list>
 /// </para>
 /// <para>
@@ -84,18 +83,15 @@ public sealed class MetadataEnricherHandler : BasePipelineHandler
             Criticality      = CalculateCriticality(payload.Level),
             Level            = payload.Level,
             Category         = payload.Category,
-            SanitizedMessage = payload.Message, // Step 3 (KVKK) maskelemesini tamamlamış
-            TargetRoles      = ResolveTargetRoles(payload.Category)
+            SanitizedMessage = payload.Message // Step 3 (KVKK) maskelemesini tamamlamış
         };
 
         context.EnrichedLog = enrichedLog;
 
         _logger.LogDebug(
-            "Enrichment tamamlandı — MessageId: {MessageId}, Criticality: {Criticality}, " +
-            "TargetRoles: [{Roles}]",
+            "Enrichment tamamlandı — MessageId: {MessageId}, Criticality: {Criticality}",
             enrichedLog.MessageId,
-            enrichedLog.Criticality,
-            string.Join(", ", enrichedLog.TargetRoles));
+            enrichedLog.Criticality);
 
         await NextAsync(context, cancellationToken); // Bu handler asla DROP yapmaz
     }
@@ -115,28 +111,5 @@ public sealed class MetadataEnricherHandler : BasePipelineHandler
         LogLevel.WARN     => CriticalityLow,
         LogLevel.INFO     => CriticalityLow,
         _                 => CriticalityLow
-    };
-
-    /// <summary>
-    /// Log kategorisine göre hedef rolleri belirler.
-    /// </summary>
-    /// <param name="category">Log kategorisi.</param>
-    /// <returns>Hedef rol listesi. Fan-out için birden fazla rol döndürebilir.</returns>
-    /// <remarks>
-    /// Spec §5 Step 5 mapping:
-    /// <list type="bullet">
-    ///   <item>Database → Developer</item>
-    ///   <item>Auth → Security</item>
-    ///   <item>System → SysAdmin</item>
-    /// </list>
-    /// Fan-out/Multicast desteği: Gelecekte bir kategorinin birden fazla role yönlendirilmesi
-    /// konfigürasyon değişikliğiyle mümkün olacaktır (Phase 6).
-    /// </remarks>
-    private static IReadOnlyList<TargetRole> ResolveTargetRoles(LogCategory category) => category switch
-    {
-        LogCategory.Database => [TargetRole.Developer],
-        LogCategory.Auth     => [TargetRole.Security],
-        LogCategory.System   => [TargetRole.SysAdmin],
-        _                    => [TargetRole.Developer] // Fallback — bilinmeyen kategori
     };
 }

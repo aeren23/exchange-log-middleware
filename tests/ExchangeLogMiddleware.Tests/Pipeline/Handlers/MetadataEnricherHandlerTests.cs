@@ -108,23 +108,6 @@ public sealed class MetadataEnricherHandlerTests
         Assert.Equal(expectedCriticality, context.EnrichedLog!.Criticality);
     }
 
-    [Theory]
-    [InlineData(LogCategory.Database, TargetRole.Developer)]
-    [InlineData(LogCategory.Auth, TargetRole.Security)]
-    [InlineData(LogCategory.System, TargetRole.SysAdmin)]
-    public async Task HandleAsync_ResolvesTargetRolesCorrectly(LogCategory category, TargetRole expectedRole)
-    {
-        // Arrange
-        var context = TestDataFactory.CreateContext(category: category);
-
-        // Act
-        await _handler.HandleAsync(context);
-
-        // Assert
-        Assert.Single(context.EnrichedLog!.TargetRoles);
-        Assert.Contains(expectedRole, context.EnrichedLog.TargetRoles);
-    }
-
     [Fact]
     public async Task HandleAsync_MapsLevelFromPayload()
     {

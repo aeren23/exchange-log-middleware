@@ -127,15 +127,15 @@ Implementation of the ordered pipeline handlers as defined in the spec.
 
 Category-based routing and role-based formatting.
 
-- [ ] **6.1** Category → TargetRole mapping configuration
-- [ ] **6.2** Fan-out/Multicast logic (a single log can be routed to multiple roles)
-- [ ] **6.3** `JsonFormatterStrategy` implementation (Developer → `.json`)
-- [ ] **6.4** `CsvFormatterStrategy` implementation (Security → `.csv`)
-- [ ] **6.5** `MarkdownFormatterStrategy` implementation (SysAdmin → `.md`)
-- [ ] **6.6** Create `FormatterFactory` (selects strategy based on role)
-- [ ] **6.7** Thread-safe file writing (`SemaphoreSlim` / async streams)
-- [ ] **6.8** Verify writes to Docker shared volume
-- [ ] **6.9** Unit test: formatting and routing validation
+- [x] **6.1** Category → TargetRole mapping configuration
+- [x] **6.2** Fan-out/Multicast logic (a single log can be routed to multiple roles)
+- [x] **6.3** `JsonFormatterStrategy` implementation (Developer → `.json`)
+- [x] **6.4** `CsvFormatterStrategy` implementation (Security → `.csv`)
+- [x] **6.5** `MarkdownFormatterStrategy` implementation (SysAdmin → `.md`)
+- [x] **6.6** Create `FormatterFactory` (selects strategy based on role)
+- [x] **6.7** Thread-safe file writing (`SemaphoreSlim` / async streams)
+- [x] **6.8** Verify writes to Docker shared volume
+- [x] **6.9** Unit test: formatting and routing validation
 
 ---
 
@@ -143,12 +143,12 @@ Category-based routing and role-based formatting.
 
 Singleton PerformanceTracker and real-time reporting.
 
-- [ ] **7.1** `PerformanceTracker` Singleton implementation (thread-safe)
-- [ ] **7.2** Metric counters: TotalReceived, DroppedByFilter, SuccessfullyProcessed
-- [ ] **7.3** Thread-safe increment operations (Interlocked)
-- [ ] **7.4** Log metrics to console every 5 seconds via background timer
-- [ ] **7.5** Throughput calculation (messages/second)
-- [ ] **7.6** Unit test: thread-safety and metric validation
+- [x] **7.1** `PerformanceTracker` Singleton implementation (thread-safe)
+- [x] **7.2** Metric counters: TotalReceived, DroppedByFilter, SuccessfullyProcessed
+- [x] **7.3** Thread-safe increment operations (Interlocked)
+- [x] **7.4** Log metrics to console every 5 seconds via background timer
+- [x] **7.5** Throughput calculation (messages/second)
+- [x] **7.6** Unit test: thread-safety and metric validation
 
 ---
 

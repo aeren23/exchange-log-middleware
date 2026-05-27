@@ -21,7 +21,9 @@ public sealed class LevelFilterHandlerTests
 
     public LevelFilterHandlerTests()
     {
+#pragma warning disable CS0618
         _tracker = new NoOpPerformanceTracker();
+#pragma warning restore CS0618
         _logger = Substitute.For<ILogger<LevelFilterHandler>>();
     }
 

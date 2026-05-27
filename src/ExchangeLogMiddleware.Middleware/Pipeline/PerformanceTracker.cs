@@ -3,20 +3,30 @@ namespace ExchangeLogMiddleware.Middleware.Pipeline;
 using ExchangeLogMiddleware.Shared.Interfaces;
 
 /// <summary>
-/// <see cref="IPerformanceTracker"/> arayüzünün raporlama içermeyen stub implementasyonu.
+/// <see cref="IPerformanceTracker"/> arayüzünün thread-safe Singleton implementasyonu.
 /// </summary>
 /// <remarks>
 /// <para>
-/// <strong>Artık production DI kaydında kullanılmamaktadır.</strong>
-/// Phase 7 ile birlikte <c>PerformanceTracker</c> (raporlama destekli) devreye alınmıştır.
+/// Spec §6.3: "MUST implement a thread-safe Singleton PerformanceTracker injected into the pipeline."
 /// </para>
 /// <para>
-/// Bu sınıf yalnızca birim testlerde mock olarak veya izole test senaryolarında kullanılmak üzere korunmaktadır.
+/// Tüm sayaç artırma ve okuma işlemleri <see cref="Interlocked"/> sınıfı aracılığıyla
+/// lock-free ve thread-safe şekilde gerçekleştirilir.
+/// </para>
+/// <para>
+/// Raporlama sorumluluğu (SRP): Konsola metrik yazdırma işlemi <c>MetricsReporterService</c>
+/// (BackgroundService) tarafından yürütülür. Bu sınıf yalnızca sayaçları yönetir.
+/// </para>
+/// <para>
+/// Sayaç artırım noktaları:
+/// <list type="bullet">
+///   <item><see cref="IncrementTotalReceived"/> — <c>BrokerListenerService</c> mesajı Channel'a yazdığında.</item>
+///   <item><see cref="IncrementDroppedByFilter"/> — Step 1 (<c>LevelFilterHandler</c>) veya Step 2 (<c>DeduplicationFilterHandler</c>) DROP ettiğinde.</item>
+///   <item><see cref="IncrementSuccessfullyProcessed"/> — Step 5 (<c>RouterAndFormatterHandler</c>) dosyaya yazmayı tamamladığında.</item>
+/// </list>
 /// </para>
 /// </remarks>
-[Obsolete("Use PerformanceTracker (with MetricsReporterService) in production DI. " +
-          "NoOpPerformanceTracker is retained for unit test isolation only.")]
-public sealed class NoOpPerformanceTracker : IPerformanceTracker
+public sealed class PerformanceTracker : IPerformanceTracker
 {
     private long _totalReceived;
     private long _droppedByFilter;
