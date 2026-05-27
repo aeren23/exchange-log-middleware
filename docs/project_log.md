@@ -76,3 +76,21 @@
   - **Azure SB Emulator:** Gerçek bulut kaynakları yerine lokalde test imkanı sağlandı (SQL Edge bağımlılığı ile).
 * **Issues & Resolutions:** None
 
+---
+### [2026-05-27 18:33:00] — Antigravity
+* **Action/Task:** Phase 3 (Log Producer Service) implementasyonu tamamlandı. `LogGeneratorService`, `LogDataGenerator`, `ProducerSettings` oluşturuldu; `Program.cs` DI kayıtları güncellendi.
+* **Files Affected:**
+  - `src/ExchangeLogMiddleware.Producer/Configuration/ProducerSettings.cs` (yeni)
+  - `src/ExchangeLogMiddleware.Producer/Generators/LogDataGenerator.cs` (yeni)
+  - `src/ExchangeLogMiddleware.Producer/Services/LogGeneratorService.cs` (yeni)
+  - `src/ExchangeLogMiddleware.Producer/Program.cs` (güncellendi)
+  - `src/ExchangeLogMiddleware.Producer/Worker.cs` (stub'a dönüştürüldü)
+  - `docs/project_plan.md`, `docs/state.md`, `docs/project_log.md` (güncellendi)
+* **Details/Decisions:**
+  - **SRP:** `LogDataGenerator` üretim mantığını kapsüller; `LogGeneratorService` yalnızca orkestrasyon yapar.
+  - **PeriodicTimer:** Drift-free rate control için `Task.Delay` yerine `PeriodicTimer` (.NET 6+) tercih edildi.
+  - **KVKK Test Verisi:** `GetSensitiveDataOrNull()` ~%25 olasılıkla TCKN, kredi kartı, e-posta veya telefon enjekte eder — Phase 5C anonymizer testleri için hazır.
+  - **Level Dağılımı:** ErrorRate tabanlı iki bantlı dağılım — normal (%60 INFO / %40 WARN), hata (%70 ERROR / %30 CRITICAL).
+  - **Metadata (3.7):** MessageId, AppId, Timestamp `RabbitMqAdapter.PublishAsync` içinde otomatik header'lara eklenir; Producer tarafında ek kod gerekmez.
+  - **Graceful Shutdown:** `OperationCanceledException` yakalanarak `stoppingToken` iptali güvenle işlenir.
+* **Issues & Resolutions:** None

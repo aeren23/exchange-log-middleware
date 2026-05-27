@@ -60,15 +60,15 @@ RabbitMQ connection, Adapter pattern implementation, and boundary translation.
 
 A BackgroundService that generates high-frequency stock exchange log data.
 
-- [ ] **3.1** Create `LogGeneratorService` (BackgroundService)
-- [ ] **3.2** Configuration model: `LogsPerSecond`, `ErrorRate` (environment variables)
-- [ ] **3.3** Generate random but realistic stock exchange log messages
-- [ ] **3.4** Log level distribution (based on `ErrorRate` configuration)
-- [ ] **3.5** Inject sensitive data (National ID, credit card, email, phone — for testing)
-- [ ] **3.6** Send messages via `IMessageBroker.Publish()` call
-- [ ] **3.7** Attach metadata via headers/properties (MessageId, AppId, Timestamp)
-- [ ] **3.8** Production rate control and throttling mechanism
-- [ ] **3.9** Producer integration test (with RabbitMQ)
+- [x] **3.1** Create `LogGeneratorService` (BackgroundService)
+- [x] **3.2** Configuration model: `LogsPerSecond`, `ErrorRate` (environment variables)
+- [x] **3.3** Generate random but realistic stock exchange log messages
+- [x] **3.4** Log level distribution (based on `ErrorRate` configuration)
+- [x] **3.5** Inject sensitive data (National ID, credit card, email, phone — for testing)
+- [x] **3.6** Send messages via `IMessageBroker.Publish()` call
+- [x] **3.7** Attach metadata via headers/properties (MessageId, AppId, Timestamp)
+- [x] **3.8** Production rate control and throttling mechanism
+- [x] **3.9** Producer integration test (with RabbitMQ)
 
 ---
 

@@ -92,8 +92,8 @@ services:
       MessageBroker__AzureServiceBus__QueueName: exchange-logs
       
       # Üretim hızı konfigürasyonu
-      Producer__LogsPerSecond: 10
-      Producer__ErrorRate: "0.3"
+      Producer__LogsPerSecond: ${PRODUCER_LOGS_PER_SECOND:-10}
+      Producer__ErrorRate: ${PRODUCER_ERROR_RATE:-0.3}
     volumes:
       - output-data:/app/output
     networks:

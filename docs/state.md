@@ -9,11 +9,11 @@
 
 | Field | Value |
 |-------|-------|
-| **Active Phase** | Phase 3 - Log Producer Service (Container 1) |
-| **Overall Progress** | 33% (Phase 0, 1 ve 2 tamamlandı) |
+| **Active Phase** | Phase 4 - Pipeline Infrastructure & Channel Buffering |
+| **Overall Progress** | 44% (Phase 0, 1, 2 ve 3 tamamlandı) |
 | **Last Updated** | 2026-05-27 |
 | **Blocker** | None |
-| **Next Step** | Phase 3.1 - Create `LogGeneratorService` |
+| **Next Step** | Phase 4.1 - Create `System.Threading.Channels` bounded channel |
 
 ---
 
@@ -24,14 +24,15 @@
 | **0** | Project Foundation & Skeleton | ✅ 2026-05-27 |
 | **1** | Data Models & Contracts | ✅ 2026-05-27 |
 | **2** | Message Broker Layer | ✅ 2026-05-27 |
+| **3** | Log Producer Service | ✅ 2026-05-27 |
 
 ---
 
 ## Active Work Details
 
-**Phase:** 3 - Log Producer Service (Container 1)  
+**Phase:** 4 - Pipeline Infrastructure & Channel Buffering  
 **Status:** Not started  
-**Notes:** Phase 2 tamamlandı. RabbitMQ ve Azure Service Bus emülatörü adaptörleri Polly desteğiyle hazır. DI konfigürasyonu tamamlandı.
+**Notes:** Phase 3 tamamlandı. LogGeneratorService, LogDataGenerator ve ProducerSettings oluşturuldu. Build: 0 hata, 0 uyarı.
 
 ---
 
@@ -68,6 +69,9 @@
 | 9 | 2026-05-27 | `IPipelineHandler.HandleAsync` → `Task` döner | DROP = sonraki handler çağrılmaz. Basit ve açık DROP mekanizması; `Task<bool>` gereksiz karmaşıklık ekler |
 | 10 | 2026-05-27 | Azure Service Bus Emulator (Docker) | Gerçek Azure kaynaklarına ihtiyaç duymadan lokal testi sağlamak |
 | 11 | 2026-05-27 | Dual-Broker mimarisi (`MessageBroker` config) | İleride provider değişikliğini sadece appsettings üzerinden kod değişikliği olmadan yapabilmek |
+| 12 | 2026-05-27 | `PeriodicTimer` ile rate control | `Task.Delay` yerine `PeriodicTimer` (.NET 6+) kullanıldı — drift-free üretim döngüsü sağlar |
+| 13 | 2026-05-27 | `Worker.cs` stub olarak korundu, silinmedi | git geçmişi için; DI'a kayıtlı değil — `LogGeneratorService` tek aktif BackgroundService |
+| 14 | 2026-05-27 | `LogDataGenerator` Singleton DI kaydı | Stateless, thread-safe; her tick'te yeni instance oluşturmak gereksiz GC baskısı yaratır |
 
 ---
 
@@ -104,6 +108,14 @@
 - `src/ExchangeLogMiddleware.Shared/Interfaces/IFormatterStrategy.cs` — Format() + FileExtension
 - `src/ExchangeLogMiddleware.Shared/Interfaces/IPerformanceTracker.cs` — Singleton + Interlocked
 - Build: **0 hata, 0 uyarı**
+
+### [2026-05-27] - Phase 3 Completed — Antigravity
+- `src/ExchangeLogMiddleware.Producer/Configuration/ProducerSettings.cs` — LogsPerSecond, ErrorRate konfigürasyon modeli
+- `src/ExchangeLogMiddleware.Producer/Generators/LogDataGenerator.cs` — 30 gerçekçi borsa mesajı, level dağılımı, %25 KVKK test verisi enjeksiyonu
+- `src/ExchangeLogMiddleware.Producer/Services/LogGeneratorService.cs` — PeriodicTimer tabanlı BackgroundService, OperationCanceledException graceful handling
+- `src/ExchangeLogMiddleware.Producer/Program.cs` — AddMessageBroker + Configure<ProducerSettings> + AddSingleton<LogDataGenerator> + AddHostedService<LogGeneratorService>
+- `src/ExchangeLogMiddleware.Producer/Worker.cs` — Stub olarak güncellendi (DI kaydı kaldırıldı)
+- Build doğrulaması: `dotnet build` → **Başarılı (0 hata, 0 uyarı)**
 
 ### [2026-05-27] - Phase 2 Completed — Antigravity
 - `docker-compose.yml` — Azure Service Bus Emulator ve SQL Edge eklendi
