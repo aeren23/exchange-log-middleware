@@ -29,6 +29,12 @@ public sealed class HtmlFormatterStrategy : IFormatterStrategy
         sb.AppendLine($"  <div><strong>Criticality:</strong> <span>{log.Criticality}</span></div>");
         sb.AppendLine($"  <div><strong>Category:</strong> <span>{log.Category}</span></div>");
         sb.AppendLine($"  <blockquote style=\"background: #f9f9f9; padding: 10px;\">{log.SanitizedMessage}</blockquote>");
+        
+        if (!string.IsNullOrEmpty(log.SanitizedRawData))
+        {
+            sb.AppendLine($"  <div style=\"margin-top: 10px;\"><strong>Raw Data:</strong> <pre style=\"background: #eee; padding: 5px;\">{log.SanitizedRawData}</pre></div>");
+        }
+        
         sb.AppendLine("</div>");
         
         return sb.ToString();

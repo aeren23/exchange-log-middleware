@@ -156,15 +156,15 @@ Singleton PerformanceTracker and real-time reporting.
 
 End-to-end validation of all components working together.
 
-- [ ] **8.1** Bring up the full system with `docker-compose up`
-- [ ] **8.2** Validate full flow: RabbitMQ → Producer → Middleware → Output files
-- [ ] **8.3** Verify output files are in the correct format
-- [ ] **8.4** KVKK masking end-to-end validation
-- [ ] **8.5** Deduplication end-to-end validation
-- [ ] **8.6** Verify performance metrics console output
-- [ ] **8.7** Stress test: high-volume log production and pipeline durability
-- [ ] **8.8** Memory leak check (under Channel buffering load)
-- [ ] **8.9** Graceful shutdown validation
+- [x] **8.1** Bring up the full system with `docker-compose up`
+- [x] **8.2** Validate full flow: RabbitMQ → Producer → Middleware → Output files
+- [x] **8.3** Verify output files are in the correct format
+- [x] **8.4** KVKK masking end-to-end validation
+- [x] **8.5** Deduplication end-to-end validation
+- [x] **8.6** Verify performance metrics console output
+- [x] **8.7** Stress test: high-volume log production and pipeline durability
+- [x] **8.8** Memory leak check (under Channel buffering load)
+- [x] **8.9** Graceful shutdown validation
 
 ---
 
@@ -172,13 +172,13 @@ End-to-end validation of all components working together.
 
 Code quality, test coverage, and project documentation.
 
-- [ ] **9.1** XML documentation for all public APIs
-- [ ] **9.2** Update README.md (setup, run instructions, architecture overview)
-- [ ] **9.3** Code format and linting check (C# conventions)
-- [ ] **9.4** SOLID principles compliance check (per coding_standarts.md)
-- [ ] **9.5** Magic number/string check — all values must be moved to configuration
-- [ ] **9.6** Error scenario and edge-case tests
-- [ ] **9.7** Final update of `docs/state.md`
+- [x] **9.1** XML documentation for all public APIs
+- [x] **9.2** Update README.md (setup, run instructions, architecture overview)
+- [x] **9.3** Code format and linting check (C# conventions)
+- [x] **9.4** SOLID principles compliance check (per coding_standarts.md)
+- [x] **9.5** Magic number/string check — all values must be moved to configuration
+- [x] **9.6** Error scenario and edge-case tests
+- [x] **9.7** Final update of `docs/state.md`
 
 ---
 

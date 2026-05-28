@@ -4,6 +4,9 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
+# Windows fallback package path'lerini devre dışı bırakır
+COPY nuget.config .
+
 # Restore için önce .csproj dosyaları kopyalanır (layer cache optimizasyonu)
 COPY src/ExchangeLogMiddleware.Shared/ExchangeLogMiddleware.Shared.csproj \
      src/ExchangeLogMiddleware.Shared/
@@ -19,7 +22,7 @@ COPY src/ExchangeLogMiddleware.Middleware/ src/ExchangeLogMiddleware.Middleware/
 
 # Release modunda yayınlanır
 WORKDIR /src/src/ExchangeLogMiddleware.Middleware
-RUN dotnet publish -c Release -o /app/publish --no-restore
+RUN dotnet publish -c Release -o /app/publish
 
 # ============================================================
 # Stage 2: Runtime — Minimal runtime image

@@ -66,19 +66,19 @@ public sealed class LogDataGenerator
 
     private static readonly string[] TcknNumbers =
     [
-        "12345678910",
-        "98765432109",
-        "45678901234",
-        "11223344556",
-        "66778899001"
+        "11111111110", // Checksum valid fake TCKN
+        "23232323280", // Checksum valid fake TCKN
+        "50505050550", // Checksum valid fake TCKN
+        "71717171710"  // Checksum valid fake TCKN (fixed from 720)
     ];
 
     private static readonly string[] CreditCardNumbers =
     [
         "5235 1234 5678 9012",
         "4111 2222 3333 4444",
-        "3714 4963 5398 431",
-        "6011 1111 1111 1117"
+        "3714 4963 5398 4312", // 16-digit format
+        "6011 0000 1234 5678",
+        "5555 6666 7777 8888"
     ];
 
     private static readonly string[] EmailAddresses =

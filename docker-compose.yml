@@ -54,11 +54,12 @@ services:
       - "5673:5672"   # Host 5673 -> Container 5672 (AMQP)
     environment:
       - ACCEPT_EULA=Y
-      - SQL_SERVER=sqledge
+      - SQL_SERVER=exchange-sqledge
       - MSSQL_SA_PASSWORD=${SQL_EDGE_PASSWORD}
-      - CONFIG_JSON={"UserConfig":{"Namespaces":[{"Name":"sbemulator","Queues":[{"Name":"exchange-logs","Properties":{"DeadLetteringOnMessageExpiration":false,"DefaultMessageTimeToLive":"P14D","DuplicateDetectionHistoryTimeWindow":"PT10M","EnableBatchedOperations":true,"EnableExpress":false,"EnablePartitioning":false,"IsAnonymousAccessible":false,"MaxDeliveryCount":10,"MaxSizeInMegabytes":1024,"RequiresDuplicateDetection":false,"RequiresSession":false}}]}]}}
     depends_on:
       - sqledge
+    volumes:
+      - ./asb_config.json:/ServiceBus_Emulator/ConfigFiles/Config.json
     networks:
       - exchange-net
     restart: on-failure
@@ -78,7 +79,7 @@ services:
         condition: service_started
     environment:
       # Broker Seçimi (RabbitMQ veya AzureServiceBus)
-      MessageBroker__Provider: RabbitMQ
+      MessageBroker__Provider: ${BROKER_PROVIDER:-RabbitMQ}
       
       # RabbitMQ Ayarları
       MessageBroker__RabbitMQ__HostName: rabbitmq
@@ -115,7 +116,7 @@ services:
         condition: service_started
     environment:
       # Broker Seçimi (RabbitMQ veya AzureServiceBus)
-      MessageBroker__Provider: RabbitMQ
+      MessageBroker__Provider: ${BROKER_PROVIDER:-RabbitMQ}
       
       # RabbitMQ Ayarları
       MessageBroker__RabbitMQ__HostName: rabbitmq

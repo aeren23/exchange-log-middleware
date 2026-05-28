@@ -25,10 +25,11 @@ public sealed class CsvFormatterStrategy : IFormatterStrategy
     /// <inheritdoc/>
     public string Format(EnrichedLog log)
     {
-        // CSV Formatı: MessageId,Timestamp,SenderId,Level,Criticality,Category,SanitizedMessage
+        // CSV Formatı: MessageId,Timestamp,SenderId,Level,Criticality,Category,SanitizedMessage,SanitizedRawData
         // Mesajın içinde virgül olma ihtimaline karşı tırnak içine alıyoruz.
         var safeMessage = log.SanitizedMessage?.Replace("\"", "\"\"") ?? string.Empty;
+        var safeRawData = log.SanitizedRawData?.Replace("\"", "\"\"") ?? string.Empty;
         
-        return $"{log.MessageId},{log.Timestamp:O},{log.SenderId},{log.Level},{log.Criticality},{log.Category},\"{safeMessage}\"";
+        return $"{log.MessageId},{log.Timestamp:O},{log.SenderId},{log.Level},{log.Criticality},{log.Category},\"{safeMessage}\",\"{safeRawData}\"";
     }
 }

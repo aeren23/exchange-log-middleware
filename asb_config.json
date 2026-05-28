@@ -1,0 +1,30 @@
+{
+  "UserConfig": {
+    "Namespaces": [
+      {
+        "Name": "sbemulatorns",
+        "Queues": [
+          {
+            "Name": "exchange-logs",
+            "Properties": {
+              "DeadLetteringOnMessageExpiration": false,
+              "DefaultMessageTimeToLive": "PT1H",
+              "DuplicateDetectionHistoryTimeWindow": "PT5M",
+              "EnableBatchedOperations": true,
+              "EnableExpress": false,
+              "EnablePartitioning": false,
+              "IsAnonymousAccessible": false,
+              "MaxDeliveryCount": 10,
+              "MaxSizeInMegabytes": 1024,
+              "RequiresDuplicateDetection": false,
+              "RequiresSession": false
+            }
+          }
+        ]
+      }
+    ],
+    "Logging": {
+      "Type": "Console"
+    }
+  }
+}

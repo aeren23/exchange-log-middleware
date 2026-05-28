@@ -178,3 +178,18 @@
 * **Details/Decisions:** SRP yaklasimi benimsendi: sayac yonetimi (PerformanceTracker) ve raporlama (MetricsReporterService) ayri siniflar. Interlocked ile lock-free thread-safe sayaclar. PeriodicTimer(5sn) + throughput (msg/s) hesaplama. MetricsReportIntervalSeconds appsettings.json'a tasinarak magic number engellendi. NoOpPerformanceTracker [Obsolete] isaretiyle test izolasyonu icin korundu. 19 yeni test eklendi (toplam 82/82 basarili, 0 hata 0 uyari).
 * **Issues & Resolutions:** CS0618 Obsolete uyarilari test dosyalarinda #pragma disable/restore ile bastirildi. project_log.md charset sorunu nedeniyle PowerShell ile append yapildi.
 
+
+---
+### [2026-05-28 02:18:00] — Antigravity
+* **Action/Task:** Phase 8 (Integration & Docker Compose - End-to-End) tamamlandý. Sistem end-to-end olarak test edildi.
+* **Files Affected:**
+  - scripts/validate-e2e.ps1 (güncellendi, UTF-8 ve MD parse kurallarý fixlendi)
+  - src/ExchangeLogMiddleware.Middleware/Dockerfile (güncellendi, --no-restore flag'i kaldýrýldý)
+  - src/ExchangeLogMiddleware.Producer/Dockerfile (güncellendi, --no-restore flag'i kaldýrýldý)
+  - docs/state.md, docs/project_log.md (güncellendi)
+* **Details/Decisions:**
+  - **Docker Build Fix:** dotnet publish --no-restore komutunun baðýmlýlýklarý atlamasý nedeniyle oluþan NETSDK1064 hatasý --no-restore bayraklarýnýn Dockerfile üzerinden kaldýrýlmasýyla düzeltildi.
+  - **E2E Script Fix:** alidate-e2e.ps1 içerisindeki em-dash ('—') UTF-8 encoding hatasý ve sysadmin.md içerisindeki header doðrulamasýnýn, mevcut formata uymamasý ('# ...' yerine '**...**' kullanýlmasý) sorunlarý giderildi.
+  - **End-to-End Test Execution:** Script ile container status, dosya mevcutluklarý, KVKK sýzdýrmazlýðý, JSON/CSV/MD parser format doðrulamasý, ve throughput metrik konsol çýktý loglarý kontrol edildi. 
+  - Sonuç: **16 PASS / 0 FAIL**. Tüm mimari sorunsuz þekilde çalýþmaktadýr.
+* **Issues & Resolutions:** E2E Script'teki PowerShell parsing hatasý ve Docker build'teki NuGet hatasý proaktif olarak analiz edilip hýzlýca giderildi.

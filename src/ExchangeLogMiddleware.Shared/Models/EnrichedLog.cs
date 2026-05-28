@@ -53,6 +53,11 @@ public sealed class EnrichedLog
     public required string SanitizedMessage { get; init; }
 
     /// <summary>
+    /// KVKK anonimleştirilmiş ekstra/ham veri (varsa).
+    /// </summary>
+    public string? SanitizedRawData { get; init; }
+
+    /// <summary>
     /// Bu logun hedeflendiği rol listesi.
     /// Step 5 (Router) konfigürasyondan kategoriye göre doldurur (Fan-out).
     /// </summary>

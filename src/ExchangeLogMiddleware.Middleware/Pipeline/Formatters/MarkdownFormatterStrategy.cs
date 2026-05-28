@@ -29,6 +29,15 @@ public sealed class MarkdownFormatterStrategy : IFormatterStrategy
         sb.AppendLine($"**Category:** `{log.Category}`  ");
         sb.AppendLine("> " + log.SanitizedMessage);
         
+        if (!string.IsNullOrEmpty(log.SanitizedRawData))
+        {
+            sb.AppendLine();
+            sb.AppendLine("**Raw Data:**");
+            sb.AppendLine("```text");
+            sb.AppendLine(log.SanitizedRawData);
+            sb.AppendLine("```");
+        }
+        
         return sb.ToString();
     }
 }

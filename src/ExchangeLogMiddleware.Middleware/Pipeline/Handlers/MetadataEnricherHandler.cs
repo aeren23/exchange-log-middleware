@@ -83,7 +83,8 @@ public sealed class MetadataEnricherHandler : BasePipelineHandler
             Criticality      = CalculateCriticality(payload.Level),
             Level            = payload.Level,
             Category         = payload.Category,
-            SanitizedMessage = payload.Message // Step 3 (KVKK) maskelemesini tamamlamış
+            SanitizedMessage = payload.Message,
+            SanitizedRawData = payload.RawData
         };
 
         context.EnrichedLog = enrichedLog;

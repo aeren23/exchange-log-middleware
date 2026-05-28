@@ -19,7 +19,7 @@ public sealed class JsonFormatterStrategy : IFormatterStrategy
     public TargetRole TargetRole => TargetRole.Developer;
 
     /// <inheritdoc/>
-    public string FileExtension => ".json";
+    public string FileExtension => ".jsonl";
 
     /// <inheritdoc/>
     public string Format(EnrichedLog log)
