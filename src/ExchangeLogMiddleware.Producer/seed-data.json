@@ -1,0 +1,103 @@
+{
+  "SeedData": {
+    "DatabaseMessages": [
+      "SELECT * FROM dbo.Trades WHERE Symbol='THYAO' executed in 47ms",
+      "INSERT INTO dbo.Orders (Symbol, Quantity, Price) executed in 12ms",
+      "UPDATE dbo.Positions SET Quantity=500 WHERE AccountId=30421 executed in 8ms",
+      "Connection pool exhausted on TradesDB primary replica — queuing request",
+      "Deadlock detected between Transaction TX-9821 and TX-9830 on dbo.Positions",
+      "Index scan on dbo.MarketData exceeded 2000ms threshold — query plan review required",
+      "Database failover initiated — switching to replica node db-replica-02",
+      "Bulk insert completed: 15000 tick records loaded into dbo.MarketData in 320ms",
+      "Foreign key constraint violation on dbo.Orders.AccountId — rollback executed",
+      "Transaction TX-44521 committed successfully: 3 tables affected",
+      "DELETE FROM dbo.HistoricalPrices WHERE Date < '2020-01-01' executed in 4500ms",
+      "Query timeout expired on dbo.Users — rolling back transaction TX-11234",
+      "Database backup completed successfully in 14 minutes",
+      "Table 'dbo.Logs' partitioned by month successfully",
+      "Rebuilding index IX_Trades_Symbol on dbo.Trades started"
+    ],
+    "AuthMessages": [
+      "User trader@bist.com.tr authenticated via 2FA successfully",
+      "Failed login attempt for account manager@exchange.com.tr from IP 192.168.4.22",
+      "Session token refreshed for user analyst@borsa.com — TTL extended 30 min",
+      "API key revoked for service account svc-market-data due to suspicious activity",
+      "Role 'TraderAdmin' assigned to user senior.trader@bist.com.tr by admin",
+      "MFA verification failed — account locked after 5 consecutive attempts: user@test.com",
+      "OAuth2 token issued for client app 'TradingDashboard' — scope: read:orders",
+      "Password reset requested for account ops@exchange.com.tr — verification email sent",
+      "Unauthorized access attempt to /api/admin/accounts from IP 10.0.0.45 — blocked",
+      "User session expired for trader2@bist.com.tr — re-authentication required",
+      "New device login detected for user admin@exchange.com.tr from IP 185.12.34.56",
+      "Account unlock requested for manager@exchange.com.tr via admin portal",
+      "JWT signature validation failed for token originating from IP 10.1.2.3",
+      "Rate limit exceeded for login endpoint from IP 203.0.113.42",
+      "Admin user superadmin@bist.com.tr impersonated session for trader@bist.com.tr"
+    ],
+    "SystemMessages": [
+      "CPU usage: 87.3% — performance threshold exceeded on exchange-middleware-01",
+      "Memory allocation: 3.2GB / 4GB — GC pressure increasing",
+      "Disk I/O latency: 145ms on /app/output volume — write queue depth: 48",
+      "System.Threading.Channels buffer at 85% capacity (850/1000) — backpressure active",
+      "RabbitMQ consumer heartbeat missed — reconnecting (attempt 1/3)",
+      "Worker thread pool utilization: 92% — queue depth: 234 pending messages",
+      "Docker container exchange-middleware RAM limit approaching: 3.8GB / 4GB",
+      "Health check passed — RabbitMQ connection stable, latency: 3ms",
+      "Graceful shutdown signal received — draining in-flight messages (128 remaining)",
+      "Log output rotation triggered — new file segment created in /app/output",
+      "Service Bus connection restored after 12 seconds of downtime",
+      "Network packet loss detected (1.5%) on primary interface eth0",
+      "High memory fragmentation detected in LOH (Large Object Heap)",
+      "Prometheus metrics scraped successfully (245 data points)",
+      "Redis cache hit ratio dropped below 60% — investigating keyspace eviction"
+    ],
+    "TcknNumbers": [
+      "11111111110",
+      "23232323280",
+      "50505050550",
+      "71717171710",
+      "12345678950",
+      "98765432150",
+      "55555555550",
+      "66666666660",
+      "88888888880",
+      "33333333330"
+    ],
+    "CreditCardNumbers": [
+      "5235 1234 5678 9012",
+      "4111 2222 3333 4444",
+      "3714 4963 5398 4312",
+      "6011 0000 1234 5678",
+      "5555 6666 7777 8888",
+      "4929 1111 2222 3333",
+      "5100 4444 5555 6666",
+      "4532 9999 8888 7777",
+      "5300 1234 9876 5432",
+      "4242 4242 4242 4242"
+    ],
+    "EmailAddresses": [
+      "trader@bist.com.tr",
+      "admin@exchange.com.tr",
+      "ops.manager@borsa.com",
+      "analyst99@fintech.io",
+      "compliance@bist.com.tr",
+      "support@exchange.com.tr",
+      "developer@fintech.io",
+      "ceo@borsa.com",
+      "intern01@test.com.tr",
+      "marketing@exchange.com"
+    ],
+    "PhoneNumbers": [
+      "+90 532 123 4567",
+      "+90 545 123 4567",
+      "+90 507 123 4567",
+      "+90 555 123 4567",
+      "+90 533 987 6543",
+      "+90 542 456 7890",
+      "+90 505 111 2233",
+      "+90 553 444 5566",
+      "+90 530 999 8877",
+      "+90 541 777 6655"
+    ]
+  }
+}

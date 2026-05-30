@@ -12,7 +12,8 @@ public sealed class JsonFormatterStrategy : IFormatterStrategy
 {
     private static readonly JsonSerializerOptions Options = new()
     {
-        WriteIndented = false // Performans ve tek satırda log yazımı için
+        WriteIndented = false, // Performans ve tek satırda log yazımı için
+        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
     };
 
     /// <inheritdoc/>

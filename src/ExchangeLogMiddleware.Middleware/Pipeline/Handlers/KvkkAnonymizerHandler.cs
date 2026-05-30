@@ -76,7 +76,7 @@ public sealed class KvkkAnonymizerHandler : BasePipelineHandler
     /// Ülke kodu ve ilk rakam korunur, kalan 9 hane maskelenir.
     /// </summary>
     private static readonly Regex PhoneRegex = new(
-        @"(\+90\s?)5\d{9}\b",
+        @"(\+90\s?)5\d{2}\s?\d{3}\s?\d{4}\b",
         RegexOptions.Compiled);
 
     /// <summary>

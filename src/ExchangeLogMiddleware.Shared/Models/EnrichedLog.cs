@@ -61,5 +61,6 @@ public sealed class EnrichedLog
     /// Bu logun hedeflendiği rol listesi.
     /// Step 5 (Router) konfigürasyondan kategoriye göre doldurur (Fan-out).
     /// </summary>
+    [System.Text.Json.Serialization.JsonIgnore]
     public IReadOnlyList<TargetRole> TargetRoles { get; set; } = [];
 }

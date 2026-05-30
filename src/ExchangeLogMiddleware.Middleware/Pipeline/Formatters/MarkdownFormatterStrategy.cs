@@ -29,13 +29,17 @@ public sealed class MarkdownFormatterStrategy : IFormatterStrategy
         sb.AppendLine($"**Category:** `{log.Category}`  ");
         sb.AppendLine("> " + log.SanitizedMessage);
         
+        sb.AppendLine();
+        sb.AppendLine("**Raw Data:**");
         if (!string.IsNullOrEmpty(log.SanitizedRawData))
         {
-            sb.AppendLine();
-            sb.AppendLine("**Raw Data:**");
             sb.AppendLine("```text");
             sb.AppendLine(log.SanitizedRawData);
             sb.AppendLine("```");
+        }
+        else
+        {
+            sb.AppendLine("`N/A - No Sensitive Data`");
         }
         
         return sb.ToString();

@@ -28,7 +28,8 @@ public sealed class CsvFormatterStrategy : IFormatterStrategy
         // CSV Formatı: MessageId,Timestamp,SenderId,Level,Criticality,Category,SanitizedMessage,SanitizedRawData
         // Mesajın içinde virgül olma ihtimaline karşı tırnak içine alıyoruz.
         var safeMessage = log.SanitizedMessage?.Replace("\"", "\"\"") ?? string.Empty;
-        var safeRawData = log.SanitizedRawData?.Replace("\"", "\"\"") ?? string.Empty;
+        var rawDataStr = string.IsNullOrWhiteSpace(log.SanitizedRawData) ? "N/A - No Sensitive Data" : log.SanitizedRawData;
+        var safeRawData = rawDataStr.Replace("\"", "\"\"");
         
         return $"{log.MessageId},{log.Timestamp:O},{log.SenderId},{log.Level},{log.Criticality},{log.Category},\"{safeMessage}\",\"{safeRawData}\"";
     }

@@ -14,4 +14,10 @@
   <ItemGroup>
     <ProjectReference Include="..\ExchangeLogMiddleware.Shared\ExchangeLogMiddleware.Shared.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Update="seed-data.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>
