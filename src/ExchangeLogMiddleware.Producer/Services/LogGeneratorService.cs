@@ -41,13 +41,17 @@ public sealed class LogGeneratorService(
             return;
         }
 
-        var intervalMs = 1000 / _settings.LogsPerSecond;
+        // Yüksek frekans için (örn: 10000 log/sn), milisaniyenin altında zamanlayıcı 
+        // çalışmayacağı için batch (toplu) üretim mantığı kullanılır.
+        var intervalMs = _settings.LogsPerSecond <= 1000 ? 1000 / _settings.LogsPerSecond : 1;
+        var logsPerTick = _settings.LogsPerSecond <= 1000 ? 1 : _settings.LogsPerSecond / 1000;
 
         logger.LogInformation(
-            "LogGeneratorService başlatıldı — Hız: {Rate} log/sn, Hata oranı: {ErrorRate:P0}, Aralık: {IntervalMs}ms",
+            "LogGeneratorService başlatıldı — Hız: {Rate} log/sn, Hata oranı: {ErrorRate:P0}, Aralık: {IntervalMs}ms, Batch Boyutu: {BatchSize}",
             _settings.LogsPerSecond,
             _settings.ErrorRate,
-            intervalMs);
+            intervalMs,
+            logsPerTick);
 
         using var timer = new PeriodicTimer(TimeSpan.FromMilliseconds(intervalMs));
 
@@ -61,14 +65,17 @@ public sealed class LogGeneratorService(
                     break;
                 }
 
-                var payload = logDataGenerator.GenerateLogPayload(_settings.ErrorRate);
-                await messageBroker.PublishAsync(payload, stoppingToken);
+                for (int i = 0; i < logsPerTick; i++)
+                {
+                    var payload = logDataGenerator.GenerateLogPayload(_settings.ErrorRate);
+                    await messageBroker.PublishAsync(payload, stoppingToken);
 
-                logger.LogDebug(
-                    "Log yayımlandı — Seviye: {Level}, Kategori: {Category}, RawData: {HasRawData}",
-                    payload.Level,
-                    payload.Category,
-                    payload.RawData is not null);
+                    logger.LogDebug(
+                        "Log yayımlandı — Seviye: {Level}, Kategori: {Category}, RawData: {HasRawData}",
+                        payload.Level,
+                        payload.Category,
+                        payload.RawData is not null);
+                }
             }
             catch (OperationCanceledException)
             {
